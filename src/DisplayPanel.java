@@ -15,6 +15,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public DisplayPanel() {
         timer = new Timer(10, this);
         gameTimer = 200.0;
+        blockList = new ArrayList<>();
         try {
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
             for (int i = 0; i < 16; i++) {
@@ -30,6 +31,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         g.setFont(new Font("Impact", Font.BOLD, 12));
         g.setColor(Color.BLUE);
         g.drawString("Timer: " + gameTimer, 700,75);
+        for (int i = 0; i < blockList.size(); i++) {
+            g.drawImage(blockList.get(i).getImage(), 300 + (i*50), 100, null);
+        }
     }
 
     @Override
