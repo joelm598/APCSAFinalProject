@@ -5,22 +5,23 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class DisplayPanel extends JPanel implements MouseListener, KeyListener, ActionListener {
     private Timer timer;
     private double gameTimer;
-    private ArrayList<Block> blockList;
+    private Block[][] blockList;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
         gameTimer = 200.0;
-        blockList = new ArrayList<>();
+        blockList = new Block[4][4];
         try {
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
-            for (int i = 0; i < 16; i++) {
-                Block b = new Block(img);
-                blockList.add(b);
+            for (int row = 0; row < blockList.length; row++) {
+                for (int col = 0; col < blockList[0].length; col++) {
+                    Block b = new Block(img);
+                    blockList[row][col] = new Block(img);
+                }
             }
         } catch (IOException e) {}
     }
@@ -31,8 +32,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         g.setFont(new Font("Impact", Font.BOLD, 12));
         g.setColor(Color.BLUE);
         g.drawString("Timer: " + gameTimer, 700,75);
-        for (int i = 0; i < blockList.size(); i++) {
-            g.drawImage(blockList.get(i).getImage(), 300 + (i*50), 100, null);
+        for (int row = 0; row < blockList.length; row++) {
+            for (int col = 0; col < blockList[0].length; col++) {
+                g.drawImage(blockList[row][col].getImage(), 380 + (row*50), 200 + (col*50), null);
+            }
         }
     }
 
