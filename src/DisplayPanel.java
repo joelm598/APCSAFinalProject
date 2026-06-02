@@ -19,8 +19,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
-                    Block b = new Block(img);
-                    blockList[row][col] = new Block(img);
+                    blockList[row][col] = new Block(img, 380 + (row*50), 200 + (col*50));
                 }
             }
         } catch (IOException e) {}
@@ -34,7 +33,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         g.drawString("Timer: " + gameTimer, 700,75);
         for (int row = 0; row < blockList.length; row++) {
             for (int col = 0; col < blockList[0].length; col++) {
-                g.drawImage(blockList[row][col].getImage(), 380 + (row*50), 200 + (col*50), null);
+                g.drawImage(blockList[row][col].getImage(), blockList[row][col].getXcord(), blockList[row][col].getYcord(), null);
             }
         }
     }
@@ -51,7 +50,46 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if (e.getButton() == MouseEvent.BUTTON3) {
+            for (int row = 0; row < blockList.length; row++) {
+                for (int col = 0; col < blockList.length; col++) {
+                    try {
+                        BufferedImage img = ImageIO.read(new File("src/tile002.png"));
+                        blockList[row][col].setImage(img);
+                    } catch (IOException ex) {
+                    }
+                }
+            }
+        }
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            for (int row = 0; row < blockList.length; row++) {
+                for (int col = 0; col < blockList.length; col++) {
+                    Point blockLocation = e.getPoint();
+                    if (blockList[row][col].getRect().contains(blockLocation)) {
+//                        if (blockList[row][col].isMine) {
+//                            try {
+//                                BufferedImage img = ImageIO.read(new File("src/tile005.png"));
+//                                setImage(img);
+//                            } catch (IOException ex) {
+//                            }
+//                        } else if (nearbyMines == 0) {
+//                            try {
+//                                BufferedImage img = ImageIO.read(new File("src/tile001.png"));
+//                                setImage(img);
+//                            } catch (IOException ex) {
+//                            }
+//                        } else {
+//                            try {
+//                                BufferedImage img = ImageIO.read(new File("src/tile00" + (7 + nearbyMines) + ".png"));
+//                                setImage(img);
+//                            } catch (IOException ex) {
+//                            }
+//                        }
+                    }
+                }
+            }
+        }
+        repaint();
     }
 
     @Override

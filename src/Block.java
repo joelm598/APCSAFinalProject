@@ -1,19 +1,39 @@
-import javax.imageio.ImageIO;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-public class Block implements MouseListener {
+public class Block {
     private BufferedImage image;
+    private Rectangle rect;
     private boolean isMine;
     private int nearbyMines;
+    private int xcord;
+    private int ycord;
 
-    public Block(BufferedImage image) {
+    public Block(BufferedImage image, int xcord, int ycord) {
         this.image = image;
-        isMine = true;
+        this.xcord = xcord;
+        this.ycord = ycord;
+        makeRectangle();
+        isMine = false;
         nearbyMines = 0;
+    }
+
+    public int getXcord() {
+        return xcord;
+    }
+
+    public int getYcord() {
+        return ycord;
+    }
+
+    public Rectangle getRect() {
+        return rect;
+    }
+
+    public void makeRectangle() {
+        int imageWidth = getImage().getWidth();
+        int imageHeight = getImage().getHeight();
+        rect = new Rectangle(xcord, ycord, imageWidth, imageHeight);
     }
 
     public void setImage(BufferedImage image) {
@@ -22,53 +42,5 @@ public class Block implements MouseListener {
 
     public BufferedImage getImage() {
         return image;
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        if (e.getButton() == MouseEvent.BUTTON3) {
-            try {
-                BufferedImage img = ImageIO.read(new File("src/tile002.png"));
-                setImage(img);
-            } catch (IOException ex) {}
-        }
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            if (isMine) {
-                try {
-                    BufferedImage img = ImageIO.read(new File("src/tile005.png"));
-                    setImage(img);
-                } catch (IOException ex) {}
-            } else if (nearbyMines == 0) {
-                try {
-                    BufferedImage img = ImageIO.read(new File("src/tile001.png"));
-                    setImage(img);
-                } catch (IOException ex) {}
-            } else {
-                try {
-                    BufferedImage img = ImageIO.read(new File("src/tile00" + (7 + nearbyMines) + ".png"));
-                    setImage(img);
-                } catch (IOException ex) {}
-            }
-        }
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }
