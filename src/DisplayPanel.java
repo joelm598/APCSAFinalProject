@@ -14,12 +14,12 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public DisplayPanel() {
         timer = new Timer(10, this);
         gameTimer = 200.0;
-        blockList = new Block[4][4];
+        blockList = new Block[16][16];
         try {
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
-                    blockList[row][col] = new Block(img, 380 + (row*50), 200 + (col*50));
+                    blockList[row][col] = new Block(img, 380 + (row*25), 200 + (col*25));
                 }
             }
         } catch (IOException e) {}
