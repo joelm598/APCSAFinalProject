@@ -19,10 +19,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
-                    blockList[row][col] = new Block(img, 380 + (row*25), 200 + (col*25));
+                    blockList[row][col] = new Block(img, 480 + (row*25) - 200, 340 + (col*25) - 200, 30);
                 }
             }
         } catch (IOException e) {}
+        timer.start();
     }
 
     @Override
@@ -64,32 +65,31 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (e.getButton() == MouseEvent.BUTTON1) {
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList.length; col++) {
-                    Point blockLocation = e.getPoint();
-                    if (blockList[row][col].getRect().contains(blockLocation)) {
-//                        if (blockList[row][col].isMine) {
-//                            try {
-//                                BufferedImage img = ImageIO.read(new File("src/tile005.png"));
-//                                setImage(img);
-//                            } catch (IOException ex) {
-//                            }
+                    Point mouseLocation = e.getPoint();
+                    if (blockList[row][col].getRect().contains(mouseLocation)) {
+                        if (blockList[row][col].isMine()) {
+                            try {
+                                BufferedImage img = ImageIO.read(new File("src/tile005.png"));
+                                blockList[row][col].setImage(img);
+                            } catch (IOException ex) {
+                            }
 //                        } else if (nearbyMines == 0) {
 //                            try {
 //                                BufferedImage img = ImageIO.read(new File("src/tile001.png"));
-//                                setImage(img);
+//                                blockList[row][col].setImage(img);
 //                            } catch (IOException ex) {
 //                            }
 //                        } else {
 //                            try {
 //                                BufferedImage img = ImageIO.read(new File("src/tile00" + (7 + nearbyMines) + ".png"));
-//                                setImage(img);
+//                                blockList[row][col].setImage(img);
 //                            } catch (IOException ex) {
 //                            }
-//                        }
+                        }
                     }
                 }
             }
         }
-        repaint();
     }
 
     @Override
@@ -104,7 +104,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        if (e.getSource() == timer) {
+            repaint();
+        }
     }
 
     @Override

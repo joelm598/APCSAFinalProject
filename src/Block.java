@@ -8,14 +8,30 @@ public class Block {
     private int nearbyMines;
     private int xcord;
     private int ycord;
+    private static int mines;
 
-    public Block(BufferedImage image, int xcord, int ycord) {
+    public Block(BufferedImage image, int xcord, int ycord, int totalMines) {
         this.image = image;
         this.xcord = xcord;
         this.ycord = ycord;
         makeRectangle();
-        isMine = false;
         nearbyMines = 0;
+        if (mines < totalMines) {
+            if (Math.random() == 0) {
+                isMine = false;
+            } else {
+                mines++;
+                isMine = true;
+            }
+        }
+    }
+
+    public static void setMines(int mines) {
+        Block.mines = mines;
+    }
+
+    public boolean isMine() {
+        return isMine;
     }
 
     public int getXcord() {

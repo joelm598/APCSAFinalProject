@@ -2,6 +2,7 @@ import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
+        Block.setMines(0);
         JFrame frame = new JFrame("Minesweeper Roguelike");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(960, 680);
