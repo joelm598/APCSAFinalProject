@@ -8,14 +8,14 @@ public class Block {
     private boolean flagged;
     private boolean isCleared;
     private int nearbyMines;
-    private int xcord;
-    private int ycord;
+    private int xCord;
+    private int yCord;
     private static int mines;
 
-    public Block(BufferedImage image, int xcord, int ycord, int totalMines) {
+    public Block(BufferedImage image, int xCord, int yCord, int totalMines) {
         this.image = image;
-        this.xcord = xcord;
-        this.ycord = ycord;
+        this.xCord = xCord;
+        this.yCord = yCord;
         makeRectangle();
         nearbyMines = 0;
         flagged = false;
@@ -34,6 +34,18 @@ public class Block {
         Block.mines = mines;
     }
 
+    public void setImage(BufferedImage image) {
+        this.image = image;
+    }
+
+    public void setFlagged(boolean flagged) {
+        this.flagged = flagged;
+    }
+
+    public void setCleared(boolean cleared) {
+        isCleared = cleared;
+    }
+
     public boolean isMine() {
         return isMine;
     }
@@ -46,12 +58,12 @@ public class Block {
         return isCleared;
     }
 
-    public int getXcord() {
-        return xcord;
+    public int getXCord() {
+        return xCord;
     }
 
-    public int getYcord() {
-        return ycord;
+    public int getYCord() {
+        return yCord;
     }
 
     public int getNearbyMines() {
@@ -62,21 +74,13 @@ public class Block {
         return rect;
     }
 
+    public BufferedImage getImage() {
+        return image;
+    }
+
     public void makeRectangle() {
         int imageWidth = getImage().getWidth();
         int imageHeight = getImage().getHeight();
-        rect = new Rectangle(xcord, ycord, imageWidth, imageHeight);
-    }
-
-    public void setImage(BufferedImage image) {
-        this.image = image;
-    }
-
-    public void setFlagged(boolean flagged) {
-        this.flagged = flagged;
-    }
-
-    public BufferedImage getImage() {
-        return image;
+        rect = new Rectangle(xCord, yCord, imageWidth, imageHeight);
     }
 }
