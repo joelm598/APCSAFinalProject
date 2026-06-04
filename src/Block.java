@@ -16,14 +16,15 @@ public class Block {
         this.ycord = ycord;
         makeRectangle();
         nearbyMines = 0;
-        if (mines < totalMines) {
-            if (Math.random() == 0) {
-                isMine = false;
-            } else {
-                mines++;
-                isMine = true;
-            }
-        }
+//        Rewrite logic to make sure mines don't spawn on first click
+//        if (mines < totalMines) {
+//            if (Math.random() == 0) {
+//                isMine = false;
+//            } else {
+//                mines++;
+//                isMine = true;
+//            }
+//        }
     }
 
     public static void setMines(int mines) {

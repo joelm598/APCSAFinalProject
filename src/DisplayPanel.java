@@ -23,6 +23,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 }
             }
         } catch (IOException e) {}
+        addMouseListener(this);
+        addKeyListener(this);
+        setFocusable(true);
+        requestFocusInWindow();
         timer.start();
     }
 
@@ -51,13 +55,16 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        Point mouseLocation = e.getPoint();
         if (e.getButton() == MouseEvent.BUTTON3) {
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList.length; col++) {
-                    try {
-                        BufferedImage img = ImageIO.read(new File("src/tile002.png"));
-                        blockList[row][col].setImage(img);
-                    } catch (IOException ex) {
+                    if (blockList[row][col].getRect().contains(mouseLocation)) {
+                        try {
+                            BufferedImage img = ImageIO.read(new File("src/tile002.png"));
+                            blockList[row][col].setImage(img);
+                        } catch (IOException ex) {
+                        }
                     }
                 }
             }
@@ -65,12 +72,12 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (e.getButton() == MouseEvent.BUTTON1) {
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList.length; col++) {
-                    Point mouseLocation = e.getPoint();
                     if (blockList[row][col].getRect().contains(mouseLocation)) {
                         if (blockList[row][col].isMine()) {
                             try {
                                 BufferedImage img = ImageIO.read(new File("src/tile005.png"));
                                 blockList[row][col].setImage(img);
+                                repaint();
                             } catch (IOException ex) {
                             }
 //                        } else if (nearbyMines == 0) {
