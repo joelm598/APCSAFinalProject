@@ -6,6 +6,7 @@ public class Block {
     private Rectangle rect;
     private boolean isMine;
     private boolean flagged;
+    private boolean isCleared;
     private int nearbyMines;
     private int xcord;
     private int ycord;
@@ -41,12 +42,20 @@ public class Block {
         return flagged;
     }
 
+    public boolean isCleared() {
+        return isCleared;
+    }
+
     public int getXcord() {
         return xcord;
     }
 
     public int getYcord() {
         return ycord;
+    }
+
+    public int getNearbyMines() {
+        return nearbyMines;
     }
 
     public Rectangle getRect() {
