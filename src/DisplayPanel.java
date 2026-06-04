@@ -36,9 +36,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         g.setFont(new Font("Impact", Font.BOLD, 12));
         g.setColor(Color.BLUE);
         g.drawString("Timer: " + gameTimer, 700,75);
-        for (int row = 0; row < blockList.length; row++) {
+        for (Block[] blocks : blockList) {
             for (int col = 0; col < blockList[0].length; col++) {
-                g.drawImage(blockList[row][col].getImage(), blockList[row][col].getXcord(), blockList[row][col].getYcord(), null);
+                g.drawImage(blocks[col].getImage(), blocks[col].getXcord(), blocks[col].getYcord(), null);
             }
         }
     }
@@ -57,39 +57,49 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public void mouseReleased(MouseEvent e) {
         Point mouseLocation = e.getPoint();
         if (e.getButton() == MouseEvent.BUTTON3) {
-            for (int row = 0; row < blockList.length; row++) {
+            for (Block[] blocks : blockList) {
                 for (int col = 0; col < blockList.length; col++) {
-                    if (blockList[row][col].getRect().contains(mouseLocation)) {
-                        try {
-                            BufferedImage img = ImageIO.read(new File("src/tile002.png"));
-                            blockList[row][col].setImage(img);
-                        } catch (IOException ex) {
+                    if (blocks[col].getRect().contains(mouseLocation)) {
+                        if (!blocks[col].isFlagged()) {
+                            try {
+                                BufferedImage img = ImageIO.read(new File("src/tile002.png"));
+                                blocks[col].setFlagged(true);
+                                blocks[col].setImage(img);
+                            } catch (IOException ex) {
+                            }
+                        } else {
+                            try {
+                                BufferedImage img = ImageIO.read(new File("src/tile000.png"));
+                                blocks[col].setFlagged(false);
+                                blocks[col].setImage(img);
+                            } catch (IOException ex) {
+                            }
                         }
                     }
                 }
             }
         }
         if (e.getButton() == MouseEvent.BUTTON1) {
-            for (int row = 0; row < blockList.length; row++) {
+            for (Block[] blocks : blockList) {
                 for (int col = 0; col < blockList.length; col++) {
-                    if (blockList[row][col].getRect().contains(mouseLocation)) {
-                        if (blockList[row][col].isMine()) {
+                    if (blocks[col].getRect().contains(mouseLocation)) {
+                        if (blocks[col].isMine()) {
                             try {
                                 BufferedImage img = ImageIO.read(new File("src/tile005.png"));
-                                blockList[row][col].setImage(img);
+                                blocks[col].setImage(img);
                                 repaint();
                             } catch (IOException ex) {
                             }
 //                        } else if (nearbyMines == 0) {
 //                            try {
 //                                BufferedImage img = ImageIO.read(new File("src/tile001.png"));
-//                                blockList[row][col].setImage(img);
+//                                blocks[col].setImage(img);
 //                            } catch (IOException ex) {
 //                            }
 //                        } else {
 //                            try {
 //                                BufferedImage img = ImageIO.read(new File("src/tile00" + (7 + nearbyMines) + ".png"));
-//                                blockList[row][col].setImage(img);
+//                                blocks[col].setImage(img);
 //                            } catch (IOException ex) {
 //                            }
                         }

@@ -5,6 +5,7 @@ public class Block {
     private BufferedImage image;
     private Rectangle rect;
     private boolean isMine;
+    private boolean flagged;
     private int nearbyMines;
     private int xcord;
     private int ycord;
@@ -16,6 +17,7 @@ public class Block {
         this.ycord = ycord;
         makeRectangle();
         nearbyMines = 0;
+        flagged = false;
 //        Rewrite logic to make sure mines don't spawn on first click
 //        if (mines < totalMines) {
 //            if (Math.random() == 0) {
@@ -33,6 +35,10 @@ public class Block {
 
     public boolean isMine() {
         return isMine;
+    }
+
+    public boolean isFlagged() {
+        return flagged;
     }
 
     public int getXcord() {
@@ -55,6 +61,10 @@ public class Block {
 
     public void setImage(BufferedImage image) {
         this.image = image;
+    }
+
+    public void setFlagged(boolean flagged) {
+        this.flagged = flagged;
     }
 
     public BufferedImage getImage() {
