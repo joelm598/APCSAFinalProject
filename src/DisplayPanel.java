@@ -10,9 +10,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private Timer timer;
     private double gameTimer;
     private Block[][] blockList;
+    private boolean firstClick;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
+        firstClick = true;
         gameTimer = 200.0;
         blockList = new Block[16][16];
         try {
@@ -57,25 +59,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public void mouseReleased(MouseEvent e) {
         Point mouseLocation = e.getPoint();
         if (e.getButton() == MouseEvent.BUTTON3) {
-            for (Block[] blocks : blockList) {
-                for (int col = 0; col < blockList.length; col++) {
-                    if (blocks[col].getRect().contains(mouseLocation)) {
-                        if (!blocks[col].isFlagged()) {
-                            try {
-                                BufferedImage img = ImageIO.read(new File("src/tile002.png"));
-                                blocks[col].setFlagged(true);
-                                blocks[col].setImage(img);
-                            } catch (IOException ex) {
-                            }
-                        } else {
-                            try {
-                                BufferedImage img = ImageIO.read(new File("src/tile000.png"));
-                                blocks[col].setFlagged(false);
-                                blocks[col].setImage(img);
-                            } catch (IOException ex) {
-                            }
-                        }
-                    }
+            for (int row = 0; row < blockList[0].length; row++) {
+                for (int col = 0; col < blockList[0].length; col++) {
+                    checkFlags(row, col, mouseLocation);
                 }
             }
         }
@@ -83,6 +69,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
                     if (blockList[row][col].getRect().contains(mouseLocation)) {
+                        if (firstClick) {
+                            checkNoMines(row, col);
+                        }
                         if (blockList[row][col].isMine()) {
                             try {
                                 BufferedImage img = ImageIO.read(new File("src/tile005.png"));
@@ -141,6 +130,26 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    public void checkFlags(int row, int col, Point p) {
+        if (blockList[row][col].getRect().contains(p)) {
+            if (!blockList[row][col].isFlagged()) {
+                try {
+                    BufferedImage img = ImageIO.read(new File("src/tile002.png"));
+                    blockList[row][col].setFlagged(true);
+                    blockList[row][col].setImage(img);
+                } catch (IOException ex) {
+                }
+            } else {
+                try {
+                    BufferedImage img = ImageIO.read(new File("src/tile000.png"));
+                    blockList[row][col].setFlagged(false);
+                    blockList[row][col].setImage(img);
+                } catch (IOException ex) {
+                }
+            }
+        }
     }
 
     public void checkNoMines(int row, int col) {
