@@ -10,24 +10,21 @@ public class Block {
     private int nearbyMines;
     private int xCord;
     private int yCord;
+    private int totalMines;
     private static int mines;
 
     public Block(BufferedImage image, int xCord, int yCord, int totalMines) {
         this.image = image;
         this.xCord = xCord;
         this.yCord = yCord;
+        this.totalMines = totalMines;
         makeRectangle();
         nearbyMines = 0;
         flagged = false;
-//        Rewrite logic to make sure mines don't spawn on first click
-//        if (mines < totalMines) {
-//            if (Math.random() == 0) {
-//                isMine = false;
-//            } else {
-//                mines++;
-//                isMine = true;
-//            }
-//        }
+    }
+
+    public void addNearbyMines() {
+        nearbyMines++;
     }
 
     public static void setMines(int mines) {
@@ -82,5 +79,16 @@ public class Block {
         int imageWidth = getImage().getWidth();
         int imageHeight = getImage().getHeight();
         rect = new Rectangle(xCord, yCord, imageWidth, imageHeight);
+    }
+
+    public void generateMines() {
+        if (mines < totalMines) {
+            if ((int) (Math.random() * 2) == 0) {
+                isMine = false;
+            } else {
+                mines++;
+                isMine = true;
+            }
+        }
     }
 }

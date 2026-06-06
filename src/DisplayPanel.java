@@ -16,7 +16,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         timer = new Timer(10, this);
         firstClick = true;
         gameTimer = 200.0;
-        blockList = new Block[16][16];
+        blockList = new Block[8][8];
         try {
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
             for (int row = 0; row < blockList.length; row++) {
@@ -59,9 +59,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public void mouseReleased(MouseEvent e) {
         Point mouseLocation = e.getPoint();
         if (e.getButton() == MouseEvent.BUTTON3) {
-            for (int row = 0; row < blockList[0].length; row++) {
+            for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
                     checkFlags(row, col, mouseLocation);
+                    System.out.println(blockList[row][col].isMine());
+                    System.out.println(blockList[row][col].getNearbyMines());
                 }
             }
         }
@@ -70,12 +72,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 for (int col = 0; col < blockList[0].length; col++) {
                     if (blockList[row][col].getRect().contains(mouseLocation)) {
                         if (firstClick) {
-                            generateMines();
-                            repeatCheckNoMines(row, col);
+                            checkFirstClick(row, col);
                         } else if (blockList[row][col].isMine()) {
                             checkIsMine(row, col);
-                        } else if (blockList[row][col].getNearbyMines() == 0) {
-                            repeatCheckNoMines(row, col);
                         } else {
                             checkNumMines(row, col);
                         }
@@ -118,7 +117,41 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     public void generateMines() {
-
+        for (int row = 0; row < blockList.length; row++) {
+            for (int col = 0; col < blockList[0].length; col++) {
+                blockList[row][col].generateMines();
+            }
+        }
+        for (int row = 0; row < blockList.length; row++) {
+            for (int col = 0; col < blockList[0].length; col++) {
+                if (row - 1 > -1 && row < blockList.length - 1 && col - 1 > -1 && col < blockList.length - 1) {
+                    if (blockList[row-1][col-1].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                    if (blockList[row-1][col].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                    if (blockList[row-1][col+1].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                    if (blockList[row][col-1].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                    if (blockList[row][col+1].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                    if (blockList[row+1][col-1].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                    if (blockList[row+1][col].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                    if (blockList[row+1][col+1].isMine()) {
+                        blockList[row][col].addNearbyMines();
+                    }
+                }
+            }
+        }
     }
 
     public void checkFlags(int row, int col, Point p) {
@@ -143,29 +176,42 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         }
     }
 
-    public void repeatCheckNoMines(int row, int col) {
-        for (int i = row - 1; i < row + 2; i++) {
-            if (i > -1 && i < blockList.length) {
-                checkNoMines(row, col);
-            }
-        }
-    }
-
-    public void checkNoMines(int row, int col) {
+    public void checkFirstClick(int row, int col) {
         try {
             BufferedImage img = ImageIO.read(new File("src/tile001.png"));
             blockList[row][col].setImage(img);
             blockList[row][col].setCleared(true);
         } catch (IOException ex) {
         }
+        firstClick = false;
+        generateMines();
+        for (int r = row - 1; r < row + 2; r++) {
+            for (int c = col - 1; c < col + 2; c++) {
+                checkNumMines(row, col);
+            }
+        }
     }
 
     public void checkNumMines(int row, int col) {
-        try {
-            BufferedImage img = ImageIO.read(new File("src/tile00" + (7 + blockList[row][col].getNearbyMines()) + ".png"));
-            blockList[row][col].setImage(img);
-            blockList[row][col].setCleared(true);
-        } catch (IOException ex) {
+        if (blockList[row][col].getNearbyMines() == 0) {
+            try {
+                BufferedImage img = ImageIO.read(new File("src/tile001.png"));
+                blockList[row][col].setImage(img);
+                blockList[row][col].setCleared(true);
+            } catch (IOException ex) {
+            }
+            for (int r = row - 1; r < row + 2; r++) {
+                for (int c = col - 1; c < col + 2; c++) {
+                    checkNumMines(row, col);
+                }
+            }
+        } else {
+            try {
+                BufferedImage img = ImageIO.read(new File("src/tile00" + (7 + blockList[row][col].getNearbyMines()) + ".png"));
+                blockList[row][col].setImage(img);
+                blockList[row][col].setCleared(true);
+            } catch (IOException ex) {
+            }
         }
     }
 
