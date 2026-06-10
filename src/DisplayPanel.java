@@ -119,7 +119,6 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public void generateMines() {
         for (int i = 0; i < Block.getMines(); i++) {
             int row = (int) (Math.random() * blockList.length);
-            System.out.println(row);
             int col = (int) (Math.random() * blockList[0].length);
             while (blockList[row][col].isMine() && !blockList[row][col].isCleared()) {
                 row = (int) (Math.random() * blockList.length);
