@@ -10,21 +10,17 @@ public class Block {
     private int nearbyMines;
     private int xCord;
     private int yCord;
-    private int totalMines;
     private static int mines;
 
     public Block(BufferedImage image, int xCord, int yCord, int totalMines) {
         this.image = image;
         this.xCord = xCord;
         this.yCord = yCord;
-        this.totalMines = totalMines;
         makeRectangle();
         nearbyMines = 0;
         flagged = false;
-    }
-
-    public void addNearbyMines() {
-        nearbyMines++;
+        isMine = false;
+        mines = totalMines;
     }
 
     public static void setMines(int mines) {
@@ -33,6 +29,14 @@ public class Block {
 
     public void setImage(BufferedImage image) {
         this.image = image;
+    }
+
+    public void setMine(boolean mine) {
+        isMine = mine;
+    }
+
+    public void setNearbyMines(int nearbyMines) {
+        this.nearbyMines = nearbyMines;
     }
 
     public void setFlagged(boolean flagged) {
@@ -63,6 +67,10 @@ public class Block {
         return yCord;
     }
 
+    public static int getMines() {
+        return mines;
+    }
+
     public int getNearbyMines() {
         return nearbyMines;
     }
@@ -79,16 +87,5 @@ public class Block {
         int imageWidth = getImage().getWidth();
         int imageHeight = getImage().getHeight();
         rect = new Rectangle(xCord, yCord, imageWidth, imageHeight);
-    }
-
-    public void generateMines() {
-        if (mines < totalMines) {
-            if ((int) (Math.random() * 2) == 0) {
-                isMine = false;
-            } else {
-                mines++;
-                isMine = true;
-            }
-        }
     }
 }
