@@ -21,7 +21,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
-                    blockList[row][col] = new Block(img, 480 + (row*25) - 200, 340 + (col*25) - 200, 30);
+                    blockList[row][col] = new Block(img, 480 + (row*25) - 200, 340 + (col*25) - 200, 99);
                 }
             }
         } catch (IOException e) {}
@@ -109,16 +109,12 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void keyPressed(KeyEvent e) {
 
-
     }
-
 
     @Override
     public void keyReleased(KeyEvent e) {
 
-
     }
-
 
     public void generateMines() {
         for (int i = 0; i < Block.getMines(); i++) {
@@ -134,30 +130,13 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         for (int r = 0; r < blockList.length; r++) {
             for (int c = 0; c < blockList[0].length; c++) {
                 int mines = 0;
-                if (r - 1 > -1 && r < blockList.length - 1 && c - 1> -1 && c < blockList.length - 1) {
-                    if (blockList[r-1][c-1].isMine()) {
-                        mines++;
-                    }
-                    if (blockList[r][c-1].isMine()) {
-                        mines++;
-                    }
-                    if (blockList[r+1][c-1].isMine()) {
-                        mines++;
-                    }
-                    if (blockList[r-1][c].isMine()) {
-                        mines++;
-                    }
-                    if (blockList[r+1][c].isMine()) {
-                        mines++;
-                    }
-                    if (blockList[r-1][c+1].isMine()) {
-                        mines++;
-                    }
-                    if (blockList[r][c+1].isMine()) {
-                        mines++;
-                    }
-                    if (blockList[r+1][c+1].isMine()) {
-                        mines++;
+                for (int dr = -1; dr <= 1; dr++) {
+                    for (int dc = -1; dc <= 1; dc++) {
+                        int nr = r + dr;
+                        int nc = c + dc;
+                        if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length && blockList[nr][nc].isMine()) {
+                            mines++;
+                        }
                     }
                 }
                 blockList[r][c].setNearbyMines(mines);
