@@ -120,7 +120,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         for (int i = 0; i < Block.getMines(); i++) {
             int row = (int) (Math.random() * blockList.length);
             int col = (int) (Math.random() * blockList[0].length);
-            while (blockList[row][col].isMine() && !blockList[row][col].isCleared()) {
+            while (blockList[row][col].isMine() || blockList[row][col].isCleared()) {
                 row = (int) (Math.random() * blockList.length);
                 col = (int) (Math.random() * blockList[0].length);
             }
@@ -173,8 +173,17 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 blockList[row][col].setCleared(true);
             } catch (IOException ex) {
             }
-            System.out.println(firstClick);
             if (firstClick) {
+                for (int dr = -1; dr <= 1; dr++) {
+                    for (int dc = -1; dc <= 1; dc++) {
+                        int nr = row + dr;
+                        int nc = col + dc;
+                        if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length) {
+                            blockList[nr][nc].setCleared(true);
+                        }
+                    }
+                }
+                blockList[row][col].setCleared(true);
                 generateMines();
                 firstClick = false;
             }
