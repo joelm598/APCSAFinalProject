@@ -61,7 +61,31 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (e.getButton() == MouseEvent.BUTTON3) {
             for (int row = 0; row < blockList[0].length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
-                    checkFlags(row, col, mouseLocation);
+                    if (!blockList[row][col].isCleared()) {
+                        checkFlags(row, col, mouseLocation);
+                    } else {
+                        int flags = 0;
+                        for (int dr = -1; dr <= 1; dr++) {
+                            for (int dc = -1; dc <= 1; dc++) {
+                                int nr = row + dr;
+                                int nc = col + dc;
+                                if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length && blockList[nr][nc].isFlagged()) {
+                                    flags++;
+                                }
+                            }
+                        }
+                        if (blockList[row][col].getNearbyMines() == flags) {
+                            for (int dr = -1; dr <= 1; dr++) {
+                                for (int dc = -1; dc <= 1; dc++) {
+                                    int nr = row + dr;
+                                    int nc = col + dc;
+                                    if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length) {
+                                        checkNumMines(nr, nc);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -186,6 +210,15 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 blockList[row][col].setCleared(true);
                 generateMines();
                 firstClick = false;
+            }
+            for (int dr = -1; dr <= 1; dr++) {
+                for (int dc = -1; dc <= 1; dc++) {
+                    int nr = row + dr;
+                    int nc = col + dc;
+                    if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length && blockList[nr][nc].getNearbyMines() == 0) {
+                        checkNumMines(nr, nc);
+                    }
+                }
             }
         } else {
             try {
