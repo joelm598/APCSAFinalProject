@@ -267,7 +267,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     public void checkNumMines(int row, int col) {
-        if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged()) {
+        if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged() && !blockList[row][col].isCleared()) {
             try {
                 BufferedImage img = ImageIO.read(new File("src/tile001.png"));
                 blockList[row][col].setImage(img);
