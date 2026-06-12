@@ -65,24 +65,70 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                         checkFlags(row, col, mouseLocation);
                     } else {
                         int flags = 0;
-                        for (int dr = -1; dr <= 1; dr++) {
-                            for (int dc = -1; dc <= 1; dc++) {
-                                int nr = row + dr;
-                                int nc = col + dc;
-                                if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length && blockList[nr][nc].isFlagged()) {
+                        if (row - 1 > -1) {
+                            if (col - 1 > -1) {
+                                if (blockList[row-1][col-1].isFlagged()) {
+                                    flags++;
+                                }
+                            }
+                            if (blockList[row-1][col].isFlagged()) {
+                                flags++;
+                            }
+                            if (col + 1 < blockList.length) {
+                                if (blockList[row-1][col+1].isFlagged()) {
                                     flags++;
                                 }
                             }
                         }
-                        if (blockList[row][col].getNearbyMines() == flags) {
-                            for (int dr = -1; dr <= 1; dr++) {
-                                for (int dc = -1; dc <= 1; dc++) {
-                                    int nr = row + dr;
-                                    int nc = col + dc;
-                                    if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length) {
-                                        checkNumMines(nr, nc);
-                                    }
+                        if (row + 1 < blockList.length) {
+                            if (col - 1 > -1) {
+                                if (blockList[row+1][col-1].isFlagged()) {
+                                    flags++;
                                 }
+                            }
+                            if (blockList[row+1][col].isFlagged()) {
+                                flags++;
+                            }
+                            if (col + 1 < blockList.length) {
+                                if (blockList[row+1][col+1].isFlagged()) {
+                                    flags++;
+                                }
+                            }
+                        }
+                        if (col - 1 > -1) {
+                            if (blockList[row][col-1].isFlagged()) {
+                                flags++;
+                            }
+                        }
+                        if (col + 1 < blockList.length) {
+                            if (blockList[row][col+1].isFlagged()) {
+                                flags++;
+                            }
+                        }
+                        if (blockList[row][col].getNearbyMines() == flags) {
+                            if (row - 1 > -1) {
+                                if (col - 1 > -1) {
+                                    checkNumMines(row-1,col-1);
+                                }
+                                checkNumMines(row-1,col);
+                                if (col + 1 < blockList.length) {
+                                    checkNumMines(row-1,col+1);
+                                }
+                            }
+                            if (row + 1 < blockList.length) {
+                                if (col - 1 > -1) {
+                                    checkNumMines(row+1,col-1);
+                                }
+                                checkNumMines(row+1,col);
+                                if (col + 1 < blockList.length) {
+                                    checkNumMines(row+1,col+1);
+                                }
+                            }
+                            if (col - 1 > -1) {
+                                checkNumMines(row,col-1);
+                            }
+                            if (col + 1 < blockList.length) {
+                                checkNumMines(row,col+1);
                             }
                         }
                     }
@@ -153,13 +199,44 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         for (int r = 0; r < blockList.length; r++) {
             for (int c = 0; c < blockList[0].length; c++) {
                 int mines = 0;
-                for (int dr = -1; dr <= 1; dr++) {
-                    for (int dc = -1; dc <= 1; dc++) {
-                        int nr = r + dr;
-                        int nc = c + dc;
-                        if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length && blockList[nr][nc].isMine()) {
+                if (r - 1 > -1) {
+                    if (c - 1 > -1) {
+                        if (blockList[r-1][c-1].isMine()) {
                             mines++;
                         }
+                    }
+                    if (blockList[r-1][c].isMine()) {
+                        mines++;
+                    }
+                    if (c + 1 < blockList.length) {
+                        if (blockList[r-1][c+1].isMine()) {
+                            mines++;
+                        }
+                    }
+                }
+                if (r + 1 < blockList.length) {
+                    if (c - 1 > -1) {
+                        if (blockList[r+1][c-1].isMine()) {
+                            mines++;
+                        }
+                    }
+                    if (blockList[r+1][c].isMine()) {
+                        mines++;
+                    }
+                    if (c + 1 < blockList.length) {
+                        if (blockList[r+1][c+1].isMine()) {
+                            mines++;
+                        }
+                    }
+                }
+                if (c - 1 > -1) {
+                    if (blockList[r][c-1].isMine()) {
+                        mines++;
+                    }
+                }
+                if (c + 1 < blockList.length) {
+                    if (blockList[r][c+1].isMine()) {
+                        mines++;
                     }
                 }
                 blockList[r][c].setNearbyMines(mines);
@@ -190,7 +267,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     public void checkNumMines(int row, int col) {
-        if (blockList[row][col].getNearbyMines() == 0) {
+        if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged()) {
             try {
                 BufferedImage img = ImageIO.read(new File("src/tile001.png"));
                 blockList[row][col].setImage(img);
@@ -198,29 +275,75 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             } catch (IOException ex) {
             }
             if (firstClick) {
-                for (int dr = -1; dr <= 1; dr++) {
-                    for (int dc = -1; dc <= 1; dc++) {
-                        int nr = row + dr;
-                        int nc = col + dc;
-                        if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length) {
-                            blockList[nr][nc].setCleared(true);
-                        }
+                if (row - 1 > -1) {
+                    if (col - 1 > -1) {
+                        blockList[row-1][col-1].setCleared(true);
                     }
+                    blockList[row-1][col].setCleared(true);
+                    if (col + 1 < blockList.length) {
+                        blockList[row-1][col+1].setCleared(true);
+                    }
+                }
+                if (row + 1 < blockList.length) {
+                    if (col - 1 > -1) {
+                        blockList[row+1][col-1].setCleared(true);
+                    }
+                    blockList[row+1][col].setCleared(true);
+                    if (col + 1 < blockList.length) {
+                        blockList[row+1][col+1].setCleared(true);
+                    }
+                }
+                if (col - 1 > -1) {
+                    blockList[row][col-1].setCleared(true);
+                }
+                if (col + 1 < blockList.length) {
+                    blockList[row][col+1].setCleared(true);
                 }
                 blockList[row][col].setCleared(true);
                 generateMines();
                 firstClick = false;
             }
-            for (int dr = -1; dr <= 1; dr++) {
-                for (int dc = -1; dc <= 1; dc++) {
-                    int nr = row + dr;
-                    int nc = col + dc;
-                    if (nr >= 0 && nr < blockList.length && nc >= 0 && nc < blockList[0].length && blockList[nr][nc].getNearbyMines() == 0) {
-                        checkNumMines(nr, nc);
+            if (row - 1 > -1) {
+                if (col - 1 > -1) {
+                    if (blockList[row-1][col-1].getNearbyMines() == 0) {
+                        checkNumMines(row-1, col-1);
+                    }
+                }
+                if (blockList[row-1][col].getNearbyMines() == 0) {
+                    checkNumMines(row-1, col);
+                }
+                if (col + 1 < blockList.length) {
+                    if (blockList[row-1][col+1].getNearbyMines() == 0) {
+                        checkNumMines(row-1, col+1);
                     }
                 }
             }
-        } else {
+            if (row + 1 < blockList.length) {
+                if (col - 1 > -1) {
+                    if (blockList[row+1][col-1].getNearbyMines() == 0) {
+                        checkNumMines(row+1, col-1);
+                    }
+                }
+                if (blockList[row+1][col].getNearbyMines() == 0) {
+                    checkNumMines(row+1, col);
+                }
+                if (col + 1 < blockList.length) {
+                    if (blockList[row+1][col+1].getNearbyMines() == 0) {
+                        checkNumMines(row+1, col+1);
+                    }
+                }
+            }
+            if (col - 1 > -1) {
+                if (blockList[row][col-1].getNearbyMines() == 0) {
+                    checkNumMines(row, col-1);
+                }
+            }
+            if (col + 1 < blockList.length) {
+                if (blockList[row][col+1].getNearbyMines() == 0) {
+                    checkNumMines(row, col+1);
+                }
+            }
+        } else if (!blockList[row][col].isFlagged()) {
             try {
                 BufferedImage img;
                 if (7 + blockList[row][col].getNearbyMines() < 10) {
