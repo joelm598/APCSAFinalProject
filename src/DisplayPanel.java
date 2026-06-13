@@ -21,7 +21,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             BufferedImage img = ImageIO.read(new File("src/tile000.png"));
             for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
-                    blockList[row][col] = new Block(img, 480 + (row*25) - 200, 340 + (col*25) - 200, 99);
+                    blockList[row][col] = new Block(img, 480 + (row*25) - 200, 340 + (col*25) - 200, 50);
                 }
             }
         } catch (IOException e) {}
@@ -58,12 +58,21 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void mouseReleased(MouseEvent e) {
         Point mouseLocation = e.getPoint();
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            for (int row = 0; row < blockList.length; row++) {
+                for (int col = 0; col < blockList[0].length; col++) {
+                    if (blockList[row][col].getRect().contains(mouseLocation)) {
+                        checkNumMines(row, col);
+                    }
+                }
+            }
+        }
         if (e.getButton() == MouseEvent.BUTTON3) {
             for (int row = 0; row < blockList[0].length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
                     if (!blockList[row][col].isCleared()) {
                         checkFlags(row, col, mouseLocation);
-                    } else {
+                    } else if (blockList[row][col].isCleared() && !blockList[row][col].isFlagged()){
                         int flags = 0;
                         if (row - 1 > -1) {
                             if (col - 1 > -1) {
@@ -129,23 +138,6 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                             }
                             if (col + 1 < blockList.length) {
                                 checkNumMines(row,col+1);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (e.getButton() == MouseEvent.BUTTON1) {
-            for (int row = 0; row < blockList.length; row++) {
-                for (int col = 0; col < blockList[0].length; col++) {
-                    if (blockList[row][col].getRect().contains(mouseLocation)) {
-                        if (firstClick) {
-                            checkNumMines(row, col);
-                        } else if (!blockList[row][col].isFlagged()) {
-                            if (blockList[row][col].isMine()) {
-                                checkIsMine(row, col);
-                            } else {
-                                checkNumMines(row, col);
                             }
                         }
                     }
@@ -267,7 +259,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     public void checkNumMines(int row, int col) {
-        if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged() && !blockList[row][col].isCleared()) {
+        if (blockList[row][col].isMine() && !blockList[row][col].isFlagged()) {
+            try {
+                BufferedImage img = ImageIO.read(new File("src/tile005.png"));
+                blockList[row][col].setImage(img);
+                blockList[row][col].setCleared(true);
+            } catch (IOException ex) {
+            }
+        } else if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged() && !blockList[row][col].isCleared()) {
             try {
                 BufferedImage img = ImageIO.read(new File("src/tile001.png"));
                 blockList[row][col].setImage(img);
@@ -346,7 +345,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         } else if (!blockList[row][col].isFlagged()) {
             try {
                 BufferedImage img;
-                if (7 + blockList[row][col].getNearbyMines() < 10) {
+                if (blockList[row][col].getNearbyMines() == 0) {
+                    img = ImageIO.read(new File("src/tile001.png"));
+                } else if (7 + blockList[row][col].getNearbyMines() < 10) {
                     img = ImageIO.read(new File("src/tile00" + (7 + blockList[row][col].getNearbyMines()) + ".png"));
                 } else {
                     img = ImageIO.read(new File("src/tile0" + (7 + blockList[row][col].getNearbyMines()) + ".png"));
@@ -355,14 +356,6 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 blockList[row][col].setCleared(true);
             } catch (IOException ex) {
             }
-        }
-    }
-
-    public void checkIsMine(int row, int col) {
-        try {
-            BufferedImage img = ImageIO.read(new File("src/tile005.png"));
-            blockList[row][col].setImage(img);
-        } catch (IOException ex) {
         }
     }
 }
