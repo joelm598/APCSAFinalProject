@@ -19,10 +19,17 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         gameTimer = 200.0;
         blockList = new Block[16][16];
         for (int i = 0; i < 14; i++) {
-            try {
-                BufferedImage img = ImageIO.read(new File("src/tile00" + i + ".png"));
-                imageList[i] = img;
-            } catch (IOException e) {}
+            if (i < 10) {
+                try {
+                    BufferedImage img = ImageIO.read(new File("src/tile00" + i + ".png"));
+                    imageList[i] = img;
+                } catch (IOException e) {}
+            } else {
+                try {
+                    BufferedImage img = ImageIO.read(new File("src/tile0" + i + ".png"));
+                    imageList[i] = img;
+                } catch (IOException e) {}
+            }
         }
         for (int row = 0; row < blockList.length; row++) {
             for (int col = 0; col < blockList[0].length; col++) {
@@ -186,7 +193,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         for (int i = 0; i < Block.getMines(); i++) {
             int row = (int) (Math.random() * blockList.length);
             int col = (int) (Math.random() * blockList[0].length);
-            while (blockList[row][col].isMine() || blockList[row][col].isCleared()) {
+            while (blockList[row][col].isMine() || blockList[row][col].isCannotBeMine()) {
                 row = (int) (Math.random() * blockList.length);
                 col = (int) (Math.random() * blockList[0].length);
             }
@@ -255,32 +262,35 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     public void checkNumMines(int row, int col) {
+        if (blockList[row][col].isCleared()) {
+            return;
+        }
         if (firstClick) {
             if (row - 1 > -1) {
                 if (col - 1 > -1) {
-                    blockList[row-1][col-1].setCleared(true);
+                    blockList[row-1][col-1].setCannotBeMine(true);
                 }
-                blockList[row-1][col].setCleared(true);
+                blockList[row-1][col].setCannotBeMine(true);
                 if (col + 1 < blockList.length) {
-                    blockList[row-1][col+1].setCleared(true);
+                    blockList[row-1][col+1].setCannotBeMine(true);
                 }
             }
             if (row + 1 < blockList.length) {
                 if (col - 1 > -1) {
-                    blockList[row+1][col-1].setCleared(true);
+                    blockList[row+1][col-1].setCannotBeMine(true);
                 }
-                blockList[row+1][col].setCleared(true);
+                blockList[row+1][col].setCannotBeMine(true);
                 if (col + 1 < blockList.length) {
-                    blockList[row+1][col+1].setCleared(true);
+                    blockList[row+1][col+1].setCannotBeMine(true);
                 }
             }
             if (col - 1 > -1) {
-                blockList[row][col-1].setCleared(true);
+                blockList[row][col-1].setCannotBeMine(true);
             }
             if (col + 1 < blockList.length) {
-                blockList[row][col+1].setCleared(true);
+                blockList[row][col+1].setCannotBeMine(true);
             }
-            blockList[row][col].setCleared(true);
+            blockList[row][col].setCannotBeMine(true);
             generateMines();
             firstClick = false;
         }

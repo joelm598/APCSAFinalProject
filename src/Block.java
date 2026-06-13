@@ -7,6 +7,7 @@ public class Block {
     private boolean isMine;
     private boolean flagged;
     private boolean isCleared;
+    private boolean cannotBeMine;
     private int nearbyMines;
     private int xCord;
     private int yCord;
@@ -20,6 +21,7 @@ public class Block {
         nearbyMines = 0;
         flagged = false;
         isMine = false;
+        cannotBeMine = false;
         mines = totalMines;
     }
 
@@ -33,6 +35,10 @@ public class Block {
 
     public void setMine(boolean mine) {
         isMine = mine;
+    }
+
+    public void setCannotBeMine(boolean cannotBeMine) {
+        this.cannotBeMine = cannotBeMine;
     }
 
     public void setNearbyMines(int nearbyMines) {
@@ -49,6 +55,10 @@ public class Block {
 
     public boolean isMine() {
         return isMine;
+    }
+
+    public boolean isCannotBeMine() {
+        return cannotBeMine;
     }
 
     public boolean isFlagged() {
