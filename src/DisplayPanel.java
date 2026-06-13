@@ -94,7 +94,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                             if (blockList[row-1][col].isFlagged()) {
                                 flags++;
                             }
-                            if (col + 1 < blockList.length) {
+                            if (col + 1 < blockList[0].length) {
                                 if (blockList[row-1][col+1].isFlagged()) {
                                     flags++;
                                 }
@@ -109,7 +109,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                             if (blockList[row+1][col].isFlagged()) {
                                 flags++;
                             }
-                            if (col + 1 < blockList.length) {
+                            if (col + 1 < blockList[0].length) {
                                 if (blockList[row+1][col+1].isFlagged()) {
                                     flags++;
                                 }
@@ -120,7 +120,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                                 flags++;
                             }
                         }
-                        if (col + 1 < blockList.length) {
+                        if (col + 1 < blockList[0].length) {
                             if (blockList[row][col+1].isFlagged()) {
                                 flags++;
                             }
@@ -131,7 +131,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                                     checkNumMines(row-1,col-1);
                                 }
                                 checkNumMines(row-1,col);
-                                if (col + 1 < blockList.length) {
+                                if (col + 1 < blockList[0].length) {
                                     checkNumMines(row-1,col+1);
                                 }
                             }
@@ -140,14 +140,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                                     checkNumMines(row+1,col-1);
                                 }
                                 checkNumMines(row+1,col);
-                                if (col + 1 < blockList.length) {
+                                if (col + 1 < blockList[0].length) {
                                     checkNumMines(row+1,col+1);
                                 }
                             }
                             if (col - 1 > -1) {
                                 checkNumMines(row,col-1);
                             }
-                            if (col + 1 < blockList.length) {
+                            if (col + 1 < blockList[0].length) {
                                 checkNumMines(row,col+1);
                             }
                         }
