@@ -11,20 +11,24 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private double gameTimer;
     private Block[][] blockList;
     private boolean firstClick;
+    private BufferedImage[] imageList;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
         firstClick = true;
         gameTimer = 200.0;
         blockList = new Block[16][16];
-        try {
-            BufferedImage img = ImageIO.read(new File("src/tile000.png"));
-            for (int row = 0; row < blockList.length; row++) {
-                for (int col = 0; col < blockList[0].length; col++) {
-                    blockList[row][col] = new Block(img, 480 + (row*25) - 200, 340 + (col*25) - 200, 50);
-                }
+        for (int i = 0; i < 14; i++) {
+            try {
+                BufferedImage img = ImageIO.read(new File("src/tile00" + i + ".png"));
+                imageList[i] = img;
+            } catch (IOException e) {}
+        }
+        for (int row = 0; row < blockList.length; row++) {
+            for (int col = 0; col < blockList[0].length; col++) {
+                blockList[row][col] = new Block(imageList[0], 480 + (row*25) - 200, 340 + (col*25) - 200, 50);
             }
-        } catch (IOException e) {}
+        }
         addMouseListener(this);
         addKeyListener(this);
         setFocusable(true);
@@ -240,67 +244,53 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (blockList[row][col].getRect().contains(p)) {
             if (!blockList[row][col].isCleared()) {
                 if (!blockList[row][col].isFlagged()) {
-                    try {
-                        BufferedImage img = ImageIO.read(new File("src/tile002.png"));
-                        blockList[row][col].setFlagged(true);
-                        blockList[row][col].setImage(img);
-                    } catch (IOException ex) {
-                    }
+                    blockList[row][col].setFlagged(true);
+                    blockList[row][col].setImage(imageList[2]);
                 } else {
-                    try {
-                        BufferedImage img = ImageIO.read(new File("src/tile000.png"));
-                        blockList[row][col].setFlagged(false);
-                        blockList[row][col].setImage(img);
-                    } catch (IOException ex) {
-                    }
+                    blockList[row][col].setFlagged(false);
+                    blockList[row][col].setImage(imageList[0]);
                 }
             }
         }
     }
 
     public void checkNumMines(int row, int col) {
-        if (blockList[row][col].isMine() && !blockList[row][col].isFlagged()) {
-            try {
-                BufferedImage img = ImageIO.read(new File("src/tile005.png"));
-                blockList[row][col].setImage(img);
-                blockList[row][col].setCleared(true);
-            } catch (IOException ex) {
-            }
-        } else if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged() && !blockList[row][col].isCleared()) {
-            try {
-                BufferedImage img = ImageIO.read(new File("src/tile001.png"));
-                blockList[row][col].setImage(img);
-                blockList[row][col].setCleared(true);
-            } catch (IOException ex) {
-            }
-            if (firstClick) {
-                if (row - 1 > -1) {
-                    if (col - 1 > -1) {
-                        blockList[row-1][col-1].setCleared(true);
-                    }
-                    blockList[row-1][col].setCleared(true);
-                    if (col + 1 < blockList.length) {
-                        blockList[row-1][col+1].setCleared(true);
-                    }
-                }
-                if (row + 1 < blockList.length) {
-                    if (col - 1 > -1) {
-                        blockList[row+1][col-1].setCleared(true);
-                    }
-                    blockList[row+1][col].setCleared(true);
-                    if (col + 1 < blockList.length) {
-                        blockList[row+1][col+1].setCleared(true);
-                    }
-                }
+        if (firstClick) {
+            if (row - 1 > -1) {
                 if (col - 1 > -1) {
-                    blockList[row][col-1].setCleared(true);
+                    blockList[row-1][col-1].setCleared(true);
                 }
+                blockList[row-1][col].setCleared(true);
                 if (col + 1 < blockList.length) {
-                    blockList[row][col+1].setCleared(true);
+                    blockList[row-1][col+1].setCleared(true);
                 }
+            }
+            if (row + 1 < blockList.length) {
+                if (col - 1 > -1) {
+                    blockList[row+1][col-1].setCleared(true);
+                }
+                blockList[row+1][col].setCleared(true);
+                if (col + 1 < blockList.length) {
+                    blockList[row+1][col+1].setCleared(true);
+                }
+            }
+            if (col - 1 > -1) {
+                blockList[row][col-1].setCleared(true);
+            }
+            if (col + 1 < blockList.length) {
+                blockList[row][col+1].setCleared(true);
+            }
+            blockList[row][col].setCleared(true);
+            generateMines();
+            firstClick = false;
+        }
+        if (blockList[row][col].isMine() && !blockList[row][col].isFlagged()) {
+            blockList[row][col].setImage(imageList[3]);
+            blockList[row][col].setCleared(true);
+        } else if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged()) {
+            if (!blockList[row][col].isCleared()) {
+                blockList[row][col].setImage(imageList[1]);
                 blockList[row][col].setCleared(true);
-                generateMines();
-                firstClick = false;
             }
             if (row - 1 > -1) {
                 if (col - 1 > -1) {
@@ -327,19 +317,12 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 checkNumMines(row, col+1);
             }
         } else if (!blockList[row][col].isFlagged()) {
-            try {
-                BufferedImage img;
-                if (blockList[row][col].getNearbyMines() == 0) {
-                    img = ImageIO.read(new File("src/tile001.png"));
-                } else if (7 + blockList[row][col].getNearbyMines() < 10) {
-                    img = ImageIO.read(new File("src/tile00" + (7 + blockList[row][col].getNearbyMines()) + ".png"));
-                } else {
-                    img = ImageIO.read(new File("src/tile0" + (7 + blockList[row][col].getNearbyMines()) + ".png"));
-                }
-                blockList[row][col].setImage(img);
-                blockList[row][col].setCleared(true);
-            } catch (IOException ex) {
+            if (blockList[row][col].getNearbyMines() == 0) {
+                blockList[row][col].setImage(imageList[0]);
+            } else {
+                blockList[row][col].setImage(imageList[5 + blockList[row][col].getNearbyMines()]);
             }
+            blockList[row][col].setCleared(true);
         }
     }
 }
