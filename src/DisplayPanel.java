@@ -79,11 +79,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             }
         }
         if (e.getButton() == MouseEvent.BUTTON3) {
-            for (int row = 0; row < blockList[0].length; row++) {
+            for (int row = 0; row < blockList.length; row++) {
                 for (int col = 0; col < blockList[0].length; col++) {
                     if (!blockList[row][col].isCleared()) {
                         checkFlags(row, col, mouseLocation);
-                    } else if (blockList[row][col].isCleared() && !blockList[row][col].isFlagged()){
+                    } else if (blockList[row][col].isCleared() && !blockList[row][col].isFlagged() && blockList[row][col].getRect().contains(mouseLocation)){
                         int flags = 0;
                         if (row - 1 > -1) {
                             if (col - 1 > -1) {
@@ -211,7 +211,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                     if (blockList[r-1][c].isMine()) {
                         mines++;
                     }
-                    if (c + 1 < blockList.length) {
+                    if (c + 1 < blockList[0].length) {
                         if (blockList[r-1][c+1].isMine()) {
                             mines++;
                         }
@@ -226,7 +226,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                     if (blockList[r+1][c].isMine()) {
                         mines++;
                     }
-                    if (c + 1 < blockList.length) {
+                    if (c + 1 < blockList[0].length) {
                         if (blockList[r+1][c+1].isMine()) {
                             mines++;
                         }
@@ -237,7 +237,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                         mines++;
                     }
                 }
-                if (c + 1 < blockList.length) {
+                if (c + 1 < blockList[0].length) {
                     if (blockList[r][c+1].isMine()) {
                         mines++;
                     }
@@ -271,7 +271,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                     blockList[row-1][col-1].setCannotBeMine(true);
                 }
                 blockList[row-1][col].setCannotBeMine(true);
-                if (col + 1 < blockList.length) {
+                if (col + 1 < blockList[0].length) {
                     blockList[row-1][col+1].setCannotBeMine(true);
                 }
             }
@@ -280,14 +280,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                     blockList[row+1][col-1].setCannotBeMine(true);
                 }
                 blockList[row+1][col].setCannotBeMine(true);
-                if (col + 1 < blockList.length) {
+                if (col + 1 < blockList[0].length) {
                     blockList[row+1][col+1].setCannotBeMine(true);
                 }
             }
             if (col - 1 > -1) {
                 blockList[row][col-1].setCannotBeMine(true);
             }
-            if (col + 1 < blockList.length) {
+            if (col + 1 < blockList[0].length) {
                 blockList[row][col+1].setCannotBeMine(true);
             }
             blockList[row][col].setCannotBeMine(true);
@@ -295,7 +295,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             firstClick = false;
         }
         if (blockList[row][col].isMine() && !blockList[row][col].isFlagged()) {
-            blockList[row][col].setImage(imageList[3]);
+            blockList[row][col].setImage(imageList[4]);
             blockList[row][col].setCleared(true);
         } else if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged()) {
             if (!blockList[row][col].isCleared()) {
@@ -307,7 +307,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                     checkNumMines(row-1, col-1);
                 }
                 checkNumMines(row-1, col);
-                if (col + 1 < blockList.length) {
+                if (col + 1 < blockList[0].length) {
                     checkNumMines(row-1, col+1);
                 }
             }
@@ -316,14 +316,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                     checkNumMines(row+1, col-1);
                 }
                 checkNumMines(row+1, col);
-                if (col + 1 < blockList.length) {
+                if (col + 1 < blockList[0].length) {
                     checkNumMines(row+1, col+1);
                 }
             }
             if (col - 1 > -1) {
                 checkNumMines(row, col-1);
             }
-            if (col + 1 < blockList.length) {
+            if (col + 1 < blockList[0].length) {
                 checkNumMines(row, col+1);
             }
         } else if (!blockList[row][col].isFlagged()) {
