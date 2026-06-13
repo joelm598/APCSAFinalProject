@@ -11,7 +11,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private double gameTimer;
     private Block[][] blockList;
     private boolean firstClick;
-    private BufferedImage[] imageList;
+    private BufferedImage[] imageList = new BufferedImage[14];
 
     public DisplayPanel() {
         timer = new Timer(10, this);
