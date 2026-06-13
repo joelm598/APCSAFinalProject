@@ -304,43 +304,27 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             }
             if (row - 1 > -1) {
                 if (col - 1 > -1) {
-                    if (blockList[row-1][col-1].getNearbyMines() == 0) {
-                        checkNumMines(row-1, col-1);
-                    }
+                    checkNumMines(row-1, col-1);
                 }
-                if (blockList[row-1][col].getNearbyMines() == 0) {
-                    checkNumMines(row-1, col);
-                }
+                checkNumMines(row-1, col);
                 if (col + 1 < blockList.length) {
-                    if (blockList[row-1][col+1].getNearbyMines() == 0) {
-                        checkNumMines(row-1, col+1);
-                    }
+                    checkNumMines(row-1, col+1);
                 }
             }
             if (row + 1 < blockList.length) {
                 if (col - 1 > -1) {
-                    if (blockList[row+1][col-1].getNearbyMines() == 0) {
-                        checkNumMines(row+1, col-1);
-                    }
+                    checkNumMines(row+1, col-1);
                 }
-                if (blockList[row+1][col].getNearbyMines() == 0) {
-                    checkNumMines(row+1, col);
-                }
+                checkNumMines(row+1, col);
                 if (col + 1 < blockList.length) {
-                    if (blockList[row+1][col+1].getNearbyMines() == 0) {
-                        checkNumMines(row+1, col+1);
-                    }
+                    checkNumMines(row+1, col+1);
                 }
             }
             if (col - 1 > -1) {
-                if (blockList[row][col-1].getNearbyMines() == 0) {
-                    checkNumMines(row, col-1);
-                }
+                checkNumMines(row, col-1);
             }
             if (col + 1 < blockList.length) {
-                if (blockList[row][col+1].getNearbyMines() == 0) {
-                    checkNumMines(row, col+1);
-                }
+                checkNumMines(row, col+1);
             }
         } else if (!blockList[row][col].isFlagged()) {
             try {
