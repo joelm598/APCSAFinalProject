@@ -25,8 +25,12 @@ public class Block {
         mines = totalMines;
     }
 
-    public static void setMines(int mines) {
-        Block.mines = mines;
+    public static void addMines() {
+        mines++;
+    }
+
+    public static void subtractMines() {
+        mines--;
     }
 
     public void setImage(BufferedImage image) {

@@ -8,33 +8,42 @@ import java.io.IOException;
 
 public class DisplayPanel extends JPanel implements MouseListener, KeyListener, ActionListener {
     private Timer timer;
-    private double gameTimer;
+    private Timer gameTimerTimer;
+    private int gameTimer;
     private Block[][] blockList;
-    private BufferedImage[] imageList = new BufferedImage[14];
+    private BufferedImage[] tileList = new BufferedImage[14];
+    private BufferedImage[] timerList = new BufferedImage[10];
     private boolean firstClick;
     private boolean gameOver;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
+        gameTimerTimer = new Timer(1000, this);
         firstClick = true;
-        gameTimer = 200.0;
+        gameTimer = 0;
         blockList = new Block[16][16];
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 13; i++) {
             if (i < 10) {
                 try {
                     BufferedImage img = ImageIO.read(new File("src/tile00" + i + ".png"));
-                    imageList[i] = img;
+                    tileList[i] = img;
                 } catch (IOException e) {}
             } else {
                 try {
                     BufferedImage img = ImageIO.read(new File("src/tile0" + i + ".png"));
-                    imageList[i] = img;
+                    tileList[i] = img;
                 } catch (IOException e) {}
             }
         }
+        for (int i = 0; i < 10; i++) {
+            try {
+                BufferedImage img = ImageIO.read(new File("src/timer00" + i + ".png"));
+                timerList[i] = img;
+            } catch (IOException e) {}
+        }
         for (int row = 0; row < blockList.length; row++) {
             for (int col = 0; col < blockList[0].length; col++) {
-                blockList[row][col] = new Block(imageList[0], 480 + (row*25) - 200, 340 + (col*25) - 200, 50);
+                blockList[row][col] = new Block(tileList[0], 280 + (row*25), 140 + (col*25), 50);
             }
         }
         addMouseListener(this);
@@ -42,6 +51,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         setFocusable(true);
         requestFocusInWindow();
         timer.start();
+        gameTimerTimer.start();
     }
 
     @Override
@@ -49,7 +59,33 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         super.paintComponent(g);
         g.setFont(new Font("Impact", Font.BOLD, 12));
         g.setColor(Color.BLUE);
-        g.drawString("Timer: " + gameTimer, 700,75);
+        int ones = gameTimer % 10;
+        int tens = (gameTimer / 10) % 10;
+        int hundreds = (gameTimer / 10) / 10;
+        if (gameTimer < 10) {
+            g.drawImage(timerList[0], 615,95, null);
+            g.drawImage(timerList[0], 635,95, null);
+            g.drawImage(timerList[ones], 655,95, null);
+        } else if (gameTimer < 100) {
+            g.drawImage(timerList[0], 615,95, null);
+            g.drawImage(timerList[tens], 635,95, null);
+            g.drawImage(timerList[ones], 655,95, null);
+        } else {
+            g.drawImage(timerList[hundreds], 615,95, null);
+            g.drawImage(timerList[tens], 635,95, null);
+            g.drawImage(timerList[ones], 655,95, null);
+        }
+        ones = Block.getMines() % 10;
+        tens = Block.getMines() / 10;
+        if (Block.getMines() < 10) {
+            g.drawImage(timerList[0], 287,95, null);
+            g.drawImage(timerList[0], 307,95, null);
+            g.drawImage(timerList[ones], 327,95, null);
+        } else {
+            g.drawImage(timerList[0], 287,95, null);
+            g.drawImage(timerList[tens], 307,95, null);
+            g.drawImage(timerList[ones], 327,95, null);
+        }
         for (Block[] blocks : blockList) {
             for (int col = 0; col < blockList[0].length; col++) {
                 g.drawImage(blocks[col].getImage(), blocks[col].getXCord(), blocks[col].getYCord(), null);
@@ -57,6 +93,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         }
         if (gameOver) {
             timer.stop();
+            gameTimerTimer.stop();
         }
     }
 
@@ -176,6 +213,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (e.getSource() == timer) {
             repaint();
         }
+        if (e.getSource() == gameTimerTimer) {
+            gameTimer++;
+        }
     }
 
     @Override
@@ -256,10 +296,12 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if (!blockList[row][col].isCleared()) {
                 if (!blockList[row][col].isFlagged()) {
                     blockList[row][col].setFlagged(true);
-                    blockList[row][col].setImage(imageList[2]);
+                    blockList[row][col].setImage(tileList[2]);
+                    Block.subtractMines();
                 } else {
                     blockList[row][col].setFlagged(false);
-                    blockList[row][col].setImage(imageList[0]);
+                    blockList[row][col].setImage(tileList[0]);
+                    Block.addMines();
                 }
             }
         }
@@ -299,11 +341,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             firstClick = false;
         }
         if (blockList[row][col].isMine() && !blockList[row][col].isFlagged()) {
-            blockList[row][col].setImage(imageList[4]);
+            blockList[row][col].setImage(tileList[4]);
             gameOver(row, col);
         } else if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged()) {
             if (!blockList[row][col].isCleared()) {
-                blockList[row][col].setImage(imageList[1]);
+                blockList[row][col].setImage(tileList[1]);
                 blockList[row][col].setCleared(true);
             }
             if (row - 1 > -1) {
@@ -332,9 +374,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             }
         } else if (!blockList[row][col].isFlagged()) {
             if (blockList[row][col].getNearbyMines() == 0) {
-                blockList[row][col].setImage(imageList[0]);
+                blockList[row][col].setImage(tileList[0]);
             } else {
-                blockList[row][col].setImage(imageList[4 + blockList[row][col].getNearbyMines()]);
+                blockList[row][col].setImage(tileList[4 + blockList[row][col].getNearbyMines()]);
             }
             blockList[row][col].setCleared(true);
         }
@@ -345,10 +387,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             for (int c = 0; c < blockList[0].length; c++) {
                 if (blockList[r][c] != blockList[row][col]) {
                     if (blockList[r][c].isMine()) {
-                        blockList[r][c].setImage(imageList[3]);
+                        blockList[r][c].setImage(tileList[3]);
                     }
                     if (!blockList[r][c].isMine() && blockList[r][c].isFlagged()) {
-                        blockList[r][c].setImage(imageList[0]);
+                        blockList[r][c].setImage(tileList[0]);
                     }
                 }
             }
