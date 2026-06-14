@@ -10,8 +10,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private Timer timer;
     private double gameTimer;
     private Block[][] blockList;
-    private boolean firstClick;
     private BufferedImage[] imageList = new BufferedImage[14];
+    private boolean firstClick;
+    private boolean gameOver;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
@@ -53,6 +54,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             for (int col = 0; col < blockList[0].length; col++) {
                 g.drawImage(blocks[col].getImage(), blocks[col].getXCord(), blocks[col].getYCord(), null);
             }
+        }
+        if (gameOver) {
+            timer.stop();
         }
     }
 
@@ -296,7 +300,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         }
         if (blockList[row][col].isMine() && !blockList[row][col].isFlagged()) {
             blockList[row][col].setImage(imageList[4]);
-            blockList[row][col].setCleared(true);
+            gameOver(row, col);
         } else if (blockList[row][col].getNearbyMines() == 0 && !blockList[row][col].isFlagged()) {
             if (!blockList[row][col].isCleared()) {
                 blockList[row][col].setImage(imageList[1]);
@@ -333,6 +337,21 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 blockList[row][col].setImage(imageList[5 + blockList[row][col].getNearbyMines()]);
             }
             blockList[row][col].setCleared(true);
+        }
+    }
+    public void gameOver(int row, int col) {
+        gameOver = true;
+        for (int r = 0; r < blockList.length; r++) {
+            for (int c = 0; c < blockList[0].length; c++) {
+                if (blockList[r][c] != blockList[row][col]) {
+                    if (blockList[r][c].isMine()) {
+                        blockList[r][c].setImage(imageList[3]);
+                    }
+                    if (!blockList[r][c].isMine() && blockList[r][c].isFlagged()) {
+                        blockList[r][c].setImage(imageList[0]);
+                    }
+                }
+            }
         }
     }
 }
