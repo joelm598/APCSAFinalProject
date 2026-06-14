@@ -334,7 +334,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             if (blockList[row][col].getNearbyMines() == 0) {
                 blockList[row][col].setImage(imageList[0]);
             } else {
-                blockList[row][col].setImage(imageList[5 + blockList[row][col].getNearbyMines()]);
+                blockList[row][col].setImage(imageList[4 + blockList[row][col].getNearbyMines()]);
             }
             blockList[row][col].setCleared(true);
         }
