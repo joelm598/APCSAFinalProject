@@ -15,11 +15,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private BufferedImage[] timerList = new BufferedImage[10];
     private boolean firstClick;
     private boolean gameOver;
+    public boolean gameWin;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
         gameTimerTimer = new Timer(1000, this);
         firstClick = true;
+        gameOver = false;
+        gameWin = false;
         gameTimer = 0;
         blockList = new Block[16][16];
         for (int i = 0; i < 13; i++) {
@@ -92,6 +95,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             }
         }
         if (gameOver) {
+            g.setFont(new Font("Times New Roman", Font.BOLD, 40));
+            g.drawString("You lose!", 400, 590);
+            timer.stop();
+            gameTimerTimer.stop();
+        }
+        if (gameWin) {
+            g.setFont(new Font("Times New Roman", Font.BOLD, 40));
+            g.drawString("You win!", 400, 590);
             timer.stop();
             gameTimerTimer.stop();
         }
@@ -380,6 +391,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             }
             blockList[row][col].setCleared(true);
         }
+        gameWin();
     }
     public void gameOver(int row, int col) {
         gameOver = true;
@@ -395,5 +407,17 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 }
             }
         }
+    }
+
+    public void gameWin() {
+        for (int r = 0; r < blockList.length; r++) {
+            for (int c = 0; c < blockList[0].length; c++) {
+                if (!blockList[r][c].isCleared() || !blockList[r][c].isMine()) {
+                    gameWin = false;
+                    return;
+                }
+            }
+        }
+        gameWin = true;
     }
 }
