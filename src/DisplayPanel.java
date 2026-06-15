@@ -245,7 +245,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     public void generateMines() {
-        for (int i = 0; i < Block.getMines(); i++) {
+        for (int i = 0; i < 50; i++) {
             int row = (int) (Math.random() * blockList.length);
             int col = (int) (Math.random() * blockList[0].length);
             while (blockList[row][col].isMine() || blockList[row][col].isCannotBeMine()) {
@@ -323,6 +323,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public void checkNumMines(int row, int col) {
         if (blockList[row][col].isCleared()) {
             return;
+        }
+        if (blockList[row][col].isFlagged() && blockList[row][col].isCannotBeMine()) {
+            blockList[row][col].setFlagged(false);
+            Block.addMines();
         }
         if (firstClick && !blockList[row][col].isFlagged()) {
             if (row - 1 > -1) {
