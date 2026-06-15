@@ -97,14 +97,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (gameOver) {
             g.setFont(new Font("Times New Roman", Font.BOLD, 40));
             g.drawString("You lose!", 400, 590);
-            timer.stop();
-            gameTimerTimer.stop();
         }
         if (gameWin) {
             g.setFont(new Font("Times New Roman", Font.BOLD, 40));
             g.drawString("You win!", 400, 590);
-            timer.stop();
-            gameTimerTimer.stop();
         }
     }
 
@@ -223,6 +219,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == timer) {
             repaint();
+            if (gameOver) {
+                timer.stop();
+                gameTimerTimer.stop();
+            }
+            if (gameWin) {
+                timer.stop();
+                gameTimerTimer.stop();
+            }
         }
         if (e.getSource() == gameTimerTimer) {
             gameTimer++;
@@ -450,7 +454,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     public void gameWin() {
         for (int r = 0; r < blockList.length; r++) {
             for (int c = 0; c < blockList[0].length; c++) {
-                if (!blockList[r][c].isCleared() || !blockList[r][c].isMine()) {
+                if (!blockList[r][c].isCleared() && !blockList[r][c].isMine()) {
                     gameWin = false;
                     return;
                 }
