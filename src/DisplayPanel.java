@@ -306,9 +306,11 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (blockList[row][col].getRect().contains(p)) {
             if (!blockList[row][col].isCleared()) {
                 if (!blockList[row][col].isFlagged()) {
-                    blockList[row][col].setFlagged(true);
-                    blockList[row][col].setImage(tileList[2]);
-                    Block.subtractMines();
+                    if (Block.getMines() > 0) {
+                        blockList[row][col].setFlagged(true);
+                        blockList[row][col].setImage(tileList[2]);
+                        Block.subtractMines();
+                    }
                 } else {
                     blockList[row][col].setFlagged(false);
                     blockList[row][col].setImage(tileList[0]);
@@ -322,32 +324,64 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (blockList[row][col].isCleared()) {
             return;
         }
-        if (firstClick) {
+        if (firstClick && !blockList[row][col].isFlagged()) {
             if (row - 1 > -1) {
                 if (col - 1 > -1) {
                     blockList[row-1][col-1].setCannotBeMine(true);
+                    if (blockList[row-1][col-1].isFlagged()) {
+                        blockList[row-1][col-1].setFlagged(false);
+                        Block.addMines();
+                    }
                 }
                 blockList[row-1][col].setCannotBeMine(true);
                 if (col + 1 < blockList[0].length) {
                     blockList[row-1][col+1].setCannotBeMine(true);
+                    if (blockList[row-1][col+1].isFlagged()) {
+                        blockList[row-1][col+1].setFlagged(false);
+                        Block.addMines();
+                    }
                 }
             }
             if (row + 1 < blockList.length) {
                 if (col - 1 > -1) {
                     blockList[row+1][col-1].setCannotBeMine(true);
+                    if (blockList[row+1][col-1].isFlagged()) {
+                        blockList[row+1][col-1].setFlagged(false);
+                        Block.addMines();
+                    }
                 }
                 blockList[row+1][col].setCannotBeMine(true);
+                if (blockList[row+1][col].isFlagged()) {
+                    blockList[row+1][col].setFlagged(false);
+                    Block.addMines();
+                }
                 if (col + 1 < blockList[0].length) {
                     blockList[row+1][col+1].setCannotBeMine(true);
+                    if (blockList[row+1][col+1].isFlagged()) {
+                        blockList[row+1][col+1].setFlagged(false);
+                        Block.addMines();
+                    }
                 }
             }
             if (col - 1 > -1) {
                 blockList[row][col-1].setCannotBeMine(true);
+                if (blockList[row][col-1].isFlagged()) {
+                    blockList[row][col-1].setFlagged(false);
+                    Block.addMines();
+                }
             }
             if (col + 1 < blockList[0].length) {
                 blockList[row][col+1].setCannotBeMine(true);
+                if (blockList[row][col+1].isFlagged()) {
+                    blockList[row][col+1].setFlagged(false);
+                    Block.addMines();
+                }
             }
             blockList[row][col].setCannotBeMine(true);
+            if (blockList[row][col].isFlagged()) {
+                blockList[row][col].setFlagged(false);
+                Block.addMines();
+            }
             generateMines();
             firstClick = false;
         }
