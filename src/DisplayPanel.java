@@ -16,6 +16,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private boolean firstClick;
     private boolean gameOver;
     public boolean gameWin;
+    private JButton reset;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
@@ -25,6 +26,10 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         gameWin = false;
         gameTimer = 0;
         blockList = new Block[16][16];
+        reset = new JButton("Try again?");
+        reset.addActionListener(this);
+        add(reset);
+        reset.setVisible(false);
         for (int i = 0; i < 13; i++) {
             if (i < 10) {
                 try {
@@ -97,6 +102,8 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (gameOver) {
             g.setFont(new Font("Times New Roman", Font.BOLD, 40));
             g.drawString("You lose!", 400, 590);
+            reset.setLocation(430,600);
+            reset.setVisible(true);
         }
         if (gameWin) {
             g.setFont(new Font("Times New Roman", Font.BOLD, 40));
@@ -230,6 +237,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         }
         if (e.getSource() == gameTimerTimer) {
             gameTimer++;
+        }
+        if (e.getSource() == reset) {
+            resetGame();
         }
     }
 
@@ -461,5 +471,26 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             }
         }
         gameWin = true;
+    }
+
+    public void resetGame() {
+        firstClick = true;
+        gameOver = false;
+        gameWin = false;
+        gameTimer = 0;
+        reset.setVisible(false);
+        for (Block[] blocks : blockList) {
+            for (Block block : blocks) {
+                block.setImage(tileList[0]);
+                block.setMine(false);
+                block.setCleared(false);
+                block.setFlagged(false);
+                block.setCannotBeMine(false);
+                block.setNearbyMines(0);
+            }
+        }
+        timer.start();
+        gameTimerTimer.start();
+        repaint();
     }
 }
