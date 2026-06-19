@@ -13,16 +13,16 @@ public class Block {
     private int yCord;
     private static int mines;
 
-    public Block(BufferedImage image, int xCord, int yCord, int totalMines) {
+    public Block(BufferedImage image, int xCord, int yCord, int mines) {
         this.image = image;
         this.xCord = xCord;
         this.yCord = yCord;
+        Block.mines = mines;
         makeRectangle();
         nearbyMines = 0;
         flagged = false;
         isMine = false;
         cannotBeMine = false;
-        mines = totalMines;
     }
 
     public static void addMines() {

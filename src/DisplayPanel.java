@@ -11,16 +11,20 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private Timer gameTimerTimer;
     private int gameTimer;
     private Block[][] blockList;
+    private BufferedImage blankSquare;
     private BufferedImage[] tileList = new BufferedImage[14];
     private BufferedImage[] timerList = new BufferedImage[10];
+    private boolean gameStart;
     private boolean firstClick;
     private boolean gameOver;
-    public boolean gameWin;
+    private boolean gameWin;
     private JButton reset;
+    private JButton gameStartButton;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
         gameTimerTimer = new Timer(1000, this);
+        gameStart = false;
         firstClick = true;
         gameOver = false;
         gameWin = false;
@@ -30,6 +34,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         reset.addActionListener(this);
         add(reset);
         reset.setVisible(false);
+        gameStartButton = new JButton("Normal");
+        gameStartButton.addActionListener(this);
+        add(gameStartButton);
+        gameStartButton.setVisible(true);
+        try {
+            BufferedImage img = ImageIO.read(new File("src/blank_square.png"));
+            blankSquare = img;
+        } catch (IOException e) {}
         for (int i = 0; i < 13; i++) {
             if (i < 10) {
                 try {
@@ -52,6 +64,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         for (int row = 0; row < blockList.length; row++) {
             for (int col = 0; col < blockList[0].length; col++) {
                 blockList[row][col] = new Block(tileList[0], 280 + (row*25), 140 + (col*25), 50);
+                blockList[row][col].setImage(blankSquare);
             }
         }
         addMouseListener(this);
@@ -66,36 +79,38 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         super.paintComponent(g);
         g.setFont(new Font("Impact", Font.BOLD, 12));
         g.setColor(Color.BLUE);
-        int ones = gameTimer % 10;
-        int tens = (gameTimer / 10) % 10;
-        int hundreds = (gameTimer / 10) / 10;
-        if (gameTimer < 10) {
-            g.drawImage(timerList[0], 615,95, null);
-            g.drawImage(timerList[0], 635,95, null);
-            g.drawImage(timerList[ones], 655,95, null);
-        } else if (gameTimer < 100) {
-            g.drawImage(timerList[0], 615,95, null);
-            g.drawImage(timerList[tens], 635,95, null);
-            g.drawImage(timerList[ones], 655,95, null);
-        } else {
-            g.drawImage(timerList[hundreds], 615,95, null);
-            g.drawImage(timerList[tens], 635,95, null);
-            g.drawImage(timerList[ones], 655,95, null);
-        }
-        ones = Block.getMines() % 10;
-        tens = Block.getMines() / 10;
-        if (Block.getMines() < 10) {
-            g.drawImage(timerList[0], 287,95, null);
-            g.drawImage(timerList[0], 307,95, null);
-            g.drawImage(timerList[ones], 327,95, null);
-        } else {
-            g.drawImage(timerList[0], 287,95, null);
-            g.drawImage(timerList[tens], 307,95, null);
-            g.drawImage(timerList[ones], 327,95, null);
-        }
-        for (Block[] blocks : blockList) {
-            for (int col = 0; col < blockList[0].length; col++) {
-                g.drawImage(blocks[col].getImage(), blocks[col].getXCord(), blocks[col].getYCord(), null);
+        if (gameStart) {
+            int ones = gameTimer % 10;
+            int tens = (gameTimer / 10) % 10;
+            int hundreds = (gameTimer / 10) / 10;
+            if (gameTimer < 10) {
+                g.drawImage(timerList[0], 615,95, null);
+                g.drawImage(timerList[0], 635,95, null);
+                g.drawImage(timerList[ones], 655,95, null);
+            } else if (gameTimer < 100) {
+                g.drawImage(timerList[0], 615,95, null);
+                g.drawImage(timerList[tens], 635,95, null);
+                g.drawImage(timerList[ones], 655,95, null);
+            } else {
+                g.drawImage(timerList[hundreds], 615,95, null);
+                g.drawImage(timerList[tens], 635,95, null);
+                g.drawImage(timerList[ones], 655,95, null);
+            }
+            ones = Block.getMines() % 10;
+            tens = Block.getMines() / 10;
+            if (Block.getMines() < 10) {
+                g.drawImage(timerList[0], 287,95, null);
+                g.drawImage(timerList[0], 307,95, null);
+                g.drawImage(timerList[ones], 327,95, null);
+            } else {
+                g.drawImage(timerList[0], 287,95, null);
+                g.drawImage(timerList[tens], 307,95, null);
+                g.drawImage(timerList[ones], 327,95, null);
+            }
+            for (Block[] blocks : blockList) {
+                for (int col = 0; col < blockList[0].length; col++) {
+                    g.drawImage(blocks[col].getImage(), blocks[col].getXCord(), blocks[col].getYCord(), null);
+                }
             }
         }
         if (gameOver) {
@@ -237,6 +252,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (e.getSource() == gameTimerTimer) {
             gameTimer++;
         }
+        if (e.getSource() == gameStartButton) {
+            startGame();
+        }
         if (e.getSource() == reset) {
             resetGame();
         }
@@ -255,6 +273,16 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     @Override
     public void keyReleased(KeyEvent e) {
 
+    }
+
+    public void startGame() {
+        for (Block[] blocks : blockList) {
+            for (Block block : blocks) {
+                block.setImage(tileList[0]);
+            }
+        }
+        gameStartButton.setVisible(false);
+        gameStart = true;
     }
 
     public void generateMines() {
@@ -477,11 +505,13 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         firstClick = true;
         gameOver = false;
         gameWin = false;
+        gameStart = false;
         gameTimer = 0;
         reset.setVisible(false);
+        gameStartButton.setVisible(true);
         for (Block[] blocks : blockList) {
             for (Block block : blocks) {
-                block.setImage(tileList[0]);
+                block.setImage(blankSquare);
                 block.setMine(false);
                 block.setCleared(false);
                 block.setFlagged(false);
