@@ -19,7 +19,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     private boolean gameOver;
     private boolean gameWin;
     private JButton reset;
-    private JButton gameStartButton;
+    private JButton easyDiffButton;
+    private JButton normalDiffButton;
+    private JButton hardDiffButton;
 
     public DisplayPanel() {
         timer = new Timer(10, this);
@@ -34,10 +36,18 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         reset.addActionListener(this);
         add(reset);
         reset.setVisible(false);
-        gameStartButton = new JButton("Normal");
-        gameStartButton.addActionListener(this);
-        add(gameStartButton);
-        gameStartButton.setVisible(true);
+        easyDiffButton = new JButton("Easy");
+        easyDiffButton.addActionListener(this);
+        add(easyDiffButton);
+        easyDiffButton.setVisible(true);
+        normalDiffButton = new JButton("Normal");
+        normalDiffButton.addActionListener(this);
+        add(normalDiffButton);
+        normalDiffButton.setVisible(true);
+        hardDiffButton = new JButton("Hard");
+        hardDiffButton.addActionListener(this);
+        add(hardDiffButton);
+        hardDiffButton.setVisible(true);
         try {
             BufferedImage img = ImageIO.read(new File("src/blank_square.png"));
             blankSquare = img;
@@ -252,7 +262,13 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         if (e.getSource() == gameTimerTimer) {
             gameTimer++;
         }
-        if (e.getSource() == gameStartButton) {
+        if (e.getSource() == easyDiffButton) {
+            startGame();
+        }
+        if (e.getSource() == normalDiffButton) {
+            startGame();
+        }
+        if (e.getSource() == hardDiffButton) {
             startGame();
         }
         if (e.getSource() == reset) {
@@ -281,7 +297,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
                 block.setImage(tileList[0]);
             }
         }
-        gameStartButton.setVisible(false);
+        easyDiffButton.setVisible(false);
+        normalDiffButton.setVisible(false);
+        hardDiffButton.setVisible(false);
         gameStart = true;
     }
 
@@ -508,7 +526,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         gameStart = false;
         gameTimer = 0;
         reset.setVisible(false);
-        gameStartButton.setVisible(true);
+        easyDiffButton.setVisible(true);
+        normalDiffButton.setVisible(true);
+        hardDiffButton.setVisible(true);
         for (Block[] blocks : blockList) {
             for (Block block : blocks) {
                 block.setImage(blankSquare);
