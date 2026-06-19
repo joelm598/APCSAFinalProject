@@ -447,14 +447,14 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
     public void gameOver(int row, int col) {
         gameOver = true;
-        for (int r = 0; r < blockList.length; r++) {
-            for (int c = 0; c < blockList[0].length; c++) {
-                if (blockList[r][c] != blockList[row][col]) {
-                    if (blockList[r][c].isMine()) {
-                        blockList[r][c].setImage(tileList[3]);
+        for (Block[] blocks : blockList) {
+            for (Block block : blocks) {
+                if (block != blockList[row][col]) {
+                    if (block.isMine()) {
+                        block.setImage(tileList[3]);
                     }
-                    if (!blockList[r][c].isMine() && blockList[r][c].isFlagged()) {
-                        blockList[r][c].setImage(tileList[0]);
+                    if (!block.isMine() && block.isFlagged()) {
+                        block.setImage(tileList[0]);
                     }
                 }
             }
@@ -462,9 +462,9 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
     }
 
     public void gameWin() {
-        for (int r = 0; r < blockList.length; r++) {
+        for (Block[] blocks : blockList) {
             for (int c = 0; c < blockList[0].length; c++) {
-                if (!blockList[r][c].isCleared() && !blockList[r][c].isMine()) {
+                if (!blocks[c].isCleared() && !blocks[c].isMine()) {
                     gameWin = false;
                     return;
                 }
@@ -491,6 +491,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         }
         timer.start();
         gameTimerTimer.start();
+        Block.setMines(50);
         repaint();
     }
 }

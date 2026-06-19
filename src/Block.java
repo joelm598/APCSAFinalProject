@@ -33,6 +33,10 @@ public class Block {
         mines--;
     }
 
+    public static void setMines(int mines) {
+        Block.mines = mines;
+    }
+
     public void setImage(BufferedImage image) {
         this.image = image;
     }
