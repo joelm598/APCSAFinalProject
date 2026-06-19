@@ -59,7 +59,6 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
         setFocusable(true);
         requestFocusInWindow();
         timer.start();
-        gameTimerTimer.start();
     }
 
     @Override
@@ -343,6 +342,7 @@ public class DisplayPanel extends JPanel implements MouseListener, KeyListener, 
             Block.addMines();
         }
         if (firstClick && !blockList[row][col].isFlagged()) {
+            gameTimerTimer.start();
             if (row - 1 > -1) {
                 if (col - 1 > -1) {
                     blockList[row-1][col-1].setCannotBeMine(true);
